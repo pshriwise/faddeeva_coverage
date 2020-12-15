@@ -1,9 +1,12 @@
-
-
+from pathlib import Path
+import sys
 
 import openmc
 import pytest
 
+current_dir = Path(sys.argv[1])
+
+datasets = ('endfb_71', 'endfb_80')
 
 def test_inf_media():
     # setup and infinite media problem
@@ -17,7 +20,10 @@ def test_inf_media():
     cell.region = openmc.rectangular_prism(1E5, 1E5, boundary_type='reflective')
 
     model.materials = [mat]
+    model.materials.cross_sections = str(current_dir / "endfb71_hdf5" / "cross_sections.xml")
+
     model.geometry = openmc.Geometry([cell])
+
     model.settings.run_mode = 'fixed source'
     model.settings.particles = 1000
     model.settings.batches = 10
@@ -25,6 +31,4 @@ def test_inf_media():
     model.settings.resonance_scattering['enable'] = True
 
     model.export_to_xml()
-
     openmc.run()
-
