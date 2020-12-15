@@ -11,7 +11,7 @@ def test_inf_media():
 
     # create a material
     mat = openmc.Material()
-    mat.add_nuclide('C12', 1.0, 'ao')
+    mat.add_nuclide('O16', 1.0, 'ao')
 
     cell = openmc.Cell(fill=mat)
     cell.region = openmc.rectangular_prism(1E5, 1E5, boundary_type='reflective')
@@ -19,8 +19,10 @@ def test_inf_media():
     model.materials = [mat]
     model.geometry = openmc.Geometry([cell])
     model.settings.run_mode = 'fixed source'
-    model.settings.particles = 10000
+    model.settings.particles = 1000
     model.settings.batches = 10
+    model.settings.temperature['multipole'] = True
+    model.settings.resonance_scattering['enable'] = True
 
     model.export_to_xml()
 
